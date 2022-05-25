@@ -8,7 +8,7 @@ import {
 } from "expo-image-picker";
 import { Colors } from "../../constants/colors";
 
-const ImagePicker = () => {
+const ImagePicker = ({ onTakeImage }) => {
 	const [pickedImage, setPickedImage] = useState();
 
 	const [
@@ -49,6 +49,7 @@ const ImagePicker = () => {
 			});
 			console.log(image);
 			setPickedImage(image.uri);
+			onTakeImage(image.uri);
 		} catch (error) {
 			console.error(error);
 		}
