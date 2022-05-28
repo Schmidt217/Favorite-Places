@@ -9,28 +9,11 @@ import AddPlace from "./screens/AddPlace";
 
 import { Colors } from "./constants/colors";
 import Map from "./screens/Map";
-import { useEffect, useState } from "react";
-import { init } from "./util/database";
+import PlaceDetails from "./screens/PlaceDetails";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-	const [dbInitialized, setDbInitialized] = useState(false);
-
-	useEffect(() => {
-		init()
-			.then(() => {
-				setDbInitialized(true);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
-
-	if (!dbInitialized) {
-		return <AppLoading />;
-	}
-
 	return (
 		<>
 			<StatusBar style="dark" />
@@ -65,6 +48,13 @@ export default function App() {
 						}}
 					/>
 					<Stack.Screen name="Map" component={Map} />
+					<Stack.Screen
+						name="PlaceDetails"
+						component={PlaceDetails}
+						options={{
+							title: "Loading Place...",
+						}}
+					/>
 				</Stack.Navigator>
 			</NavigationContainer>
 		</>

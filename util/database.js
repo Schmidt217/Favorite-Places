@@ -10,7 +10,7 @@ export const init = () => {
 				`CREATE TABLE IF NOT EXISTS places (
                 id INTEGER PRIMARY KEY NOT NULL,
                 title TEXT NOT NULL,
-                imageUri TEXT,
+                imageUri TEXT NOT NULL,
                 address TEXT NOT NULL,
                 lat REAL NOT NULL,
                 lng REAL NOT NULL
@@ -28,13 +28,11 @@ export const init = () => {
 	return promise;
 };
 
-export const insertPlace = (place) => {
+export function insertPlace(place) {
 	const promise = new Promise((resolve, reject) => {
 		database.transaction((tx) => {
 			tx.executeSql(
-				`INSERT INTO places (
-                title, imageUri, address, lat, lng
-            ) VALUES (?, ?, ?, ?, ?)`,
+				`INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?)`,
 				[
 					place.title,
 					place.imageUri,
@@ -42,6 +40,25 @@ export const insertPlace = (place) => {
 					place.location.lat,
 					place.location.lng,
 				],
+				(_, result) => {
+					resolve(result);
+				},
+				(_, error) => {
+					reject(error);
+				}
+			);
+		});
+	});
+
+	return promise;
+}
+
+export function fetchPlaces() {
+	const promise = new Promise((resolve, reject) => {
+		database.transaction((tx) => {
+			tx.executeSql(
+				"SELECT * FROM places",
+				[],
 				(_, result) => {
 					const places = [];
 
@@ -67,17 +84,25 @@ export const insertPlace = (place) => {
 			);
 		});
 	});
-};
 
-export const fetchPlaces = () => {
+	return promise;
+}
+
+export const fetchPlaceDetails = (id) => {
 	const promise = new Promise((resolve, reject) => {
 		database.transaction((tx) => {
 			tx.executeSql(
-				`SELECT * FROM places`,
-				[],
+				`SELECT * FROM places WHERE id = ?`,
+				[id],
 				(_, result) => {
-					console.log(result);
-					resolve(result);
+					const dbPlace = restuls.row._array[0];
+					const place = new Place(
+						dbPlace.title,
+						dbPlace.imageUri,
+						{ lat: dbPlace.lat, lng: dbPlace.lng, address: dbPlace.address },
+						dbPlace.id
+					);
+					resolve(place);
 				},
 				(_, error) => {
 					reject(error);
@@ -85,4 +110,5 @@ export const fetchPlaces = () => {
 			);
 		});
 	});
+	return promise;
 };

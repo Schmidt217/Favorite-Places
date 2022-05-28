@@ -12,8 +12,8 @@ const AllPlaces = ({ route }) => {
 	useEffect(() => {
 		const loadPlaces = async () => {
 			const places = await fetchPlaces();
-			console.log(places);
 			setLoadedPlaces(places);
+			// console.log(places);
 		};
 		if (isFocused) {
 			loadPlaces();

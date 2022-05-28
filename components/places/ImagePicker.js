@@ -47,7 +47,6 @@ const ImagePicker = ({ onTakeImage }) => {
 				aspect: [16, 9],
 				quality: 0.5,
 			});
-			console.log(image);
 			setPickedImage(image.uri);
 			onTakeImage(image.uri);
 		} catch (error) {
